@@ -1,5 +1,6 @@
 package br.com.alura.screenmatch.principal;
 
+import br.com.alura.screenmatch.excecao.ErroDeConversaoDeAnoException;
 import br.com.alura.screenmatch.modelos.Titulo;
 import br.com.alura.screenmatch.modelos.TituloOmdb;
 import com.google.gson.FieldNamingPolicy;
@@ -24,6 +25,8 @@ public class PrincipalComBusca {
 
         var endereco = "https://www.omdbapi.com/?t="+ busca+ "&apikey=6585022c";
 
+
+        try {
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(endereco))
@@ -36,11 +39,12 @@ public class PrincipalComBusca {
                 .setFieldNamingPolicy(FieldNamingPolicy.UPPER_CAMEL_CASE).create();
         TituloOmdb meuTituloOmdb = gson.fromJson(jsonRepresentation, TituloOmdb.class);
         System.out.println(meuTituloOmdb);
-        try {
             Titulo meuTitulo = new Titulo(meuTituloOmdb);
             System.out.println("Titulo já convertido!!!");
             System.out.println(meuTitulo);
-        } catch (NumberFormatException e) {
+        } catch (IllegalArgumentException e) {
+            System.out.println("Erro no argumetno do Request Http");
+        }catch (ErroDeConversaoDeAnoException e) {
             System.out.println("Aconteceu um erro: ");
             System.out.println(e.getMessage());
         } finally {
